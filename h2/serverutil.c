@@ -42,7 +42,6 @@
 #if !defined(_SC_NPROCESSORS_ONLN)
 #include <sys/sysctl.h>
 #endif
-#include "cloexec.h"
 #endif
 #include "h2o/memory.h"
 #include "h2o/serverutil.h"
