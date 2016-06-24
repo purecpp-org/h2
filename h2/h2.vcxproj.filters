@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="chunked.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="compress.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="errordoc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="expires.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="fastcgi.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="file.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="headers.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mimemap.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="proxy.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="redirect.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="reproxy.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="status.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="throttle_resp.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="http1.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tunnel.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="cache.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="filecache.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="hostinfo.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="http1client.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="memory.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="multithread.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="serverutil.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="socket.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="socketpool.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="string.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="time.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="timeout.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="url.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="config.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="configurator.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="context.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="logconf.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="request.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="token.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="util.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="gzip.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="events.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="requests.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="picohttpparser.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="connection.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="casper.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="scheduler.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="hpack.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="frame.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stream.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="websocket.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="token_table.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="picohttpparser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="h2o.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="openssl_hostname_validation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="yoml.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="yoml-parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="khash.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="defaults.c.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="golombset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="hpack_huffman_table.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="hpack_static_table.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="templates.c.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="msdirent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

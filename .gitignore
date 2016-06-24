@@ -11,3 +11,8 @@
 *.lai
 *.la
 *.a
+
+Debug
+Release
+.vs
+*.db
