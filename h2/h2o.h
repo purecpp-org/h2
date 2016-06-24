@@ -1740,7 +1740,7 @@ inline h2o_conn_t *h2o_create_connection(size_t sz, h2o_context_t *ctx, h2o_host
     conn->ctx = ctx;
     conn->hosts = hosts;
     conn->connected_at = connected_at;
-    conn->id = __sync_add_and_fetch(&h2o_connection_id, 1);
+    conn->id = __sync_add_and_fetch(LOCK_CAST &h2o_connection_id, 1);
     conn->callbacks = callbacks;
 
     return conn;
