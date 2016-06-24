@@ -1727,6 +1727,9 @@ void h2o_status_register_configurator(h2o_globalconf_t *conf);
 #ifdef _MSC_VER
 #include <windows.h>
 #define __sync_add_and_fetch InterlockedAdd64
+#define LOCK_CAST (volatile LONG64*)
+#else
+#define LOCK_CAST  
 #endif
 
 inline h2o_conn_t *h2o_create_connection(size_t sz, h2o_context_t *ctx, h2o_hostconf_t **hosts, struct timeval connected_at,
@@ -1737,7 +1740,7 @@ inline h2o_conn_t *h2o_create_connection(size_t sz, h2o_context_t *ctx, h2o_host
     conn->ctx = ctx;
     conn->hosts = hosts;
     conn->connected_at = connected_at;
-    conn->id = __sync_add_and_fetch((volatile LONG64*)&h2o_connection_id, 1);
+    conn->id = __sync_add_and_fetch(&h2o_connection_id, 1);
     conn->callbacks = callbacks;
 
     return conn;
