@@ -248,14 +248,14 @@ static void on_getaddr(h2o_hostinfo_getaddr_req_t *getaddr_req, const char *errs
     start_connect(req, selected->ai_addr, selected->ai_addrlen);
 }
 
-#define __sync_fetch_and_add InterlockedExchangeAdd
-
 #ifdef _MSC_VER
 #include <windows.h>
 #ifdef WIN64
 #define __sync_add_and_fetch InterlockedAdd64
+#define __sync_fetch_and_add InterlockedExchangeAdd64
 #else
 #define __sync_add_and_fetch InterlockedAdd
+#define __sync_fetch_and_add InterlockedExchangeAdd
 #endif
 #endif
 

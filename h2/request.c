@@ -20,12 +20,11 @@
  * IN THE SOFTWARE.
  */
 #ifdef _MSC_VER
-#include <WinSock2.h>
+#include <malloc.h>
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include "h2o.h"
 
 #define INITIAL_INBUFSZ 8192

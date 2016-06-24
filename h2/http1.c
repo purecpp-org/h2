@@ -20,11 +20,13 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
+#ifdef _MSC_VER
+#include <malloc.h>
+#endif
 #include <inttypes.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include "picohttpparser.h"
 #include "h2o.h"
 #include "h2o/http1.h"

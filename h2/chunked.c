@@ -20,8 +20,9 @@
  * IN THE SOFTWARE.
  */
 
-
+#ifdef _MSC_VER
 #include <malloc.h>
+#endif
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>

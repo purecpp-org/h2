@@ -29,8 +29,8 @@
 #else
 #include <io.h>
 #include <WinSock2.h>
-#endif
 #include <malloc.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>

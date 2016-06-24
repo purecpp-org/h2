@@ -27,8 +27,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _MSC_VER
 #include <malloc.h>
-#ifndef _MSC_VER
+#else
 #include <sys/mman.h>
 #include <unistd.h>
 #endif

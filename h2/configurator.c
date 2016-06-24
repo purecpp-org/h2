@@ -21,13 +21,13 @@
  */
 #ifdef _MSC_VER
 #include <WinSock2.h>
+#include <malloc.h>
 #endif
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
-#include <malloc.h>
 #include "h2o.h"
 #include "h2o/configurator.h"
 

@@ -19,10 +19,12 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
+#ifdef _MSC_VER
+#include <malloc.h>
+#endif
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
 #include "khash.h"
 #include "h2o.h"
 
