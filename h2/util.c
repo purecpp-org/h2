@@ -87,17 +87,17 @@ static void async_resumption_on_get(h2o_iovec_t session_data, void *_accept_data
 //                           data, H2O_MEMCACHED_ENCODE_KEY | H2O_MEMCACHED_ENCODE_VALUE);
 // }
 
-static void async_resumption_new(h2o_iovec_t session_id, h2o_iovec_t session_data)
-{
-    h2o_memcached_set(async_resumption_context.memc, session_id, session_data,
-                      (uint32_t)time(NULL) + async_resumption_context.expiration,
-                      H2O_MEMCACHED_ENCODE_KEY | H2O_MEMCACHED_ENCODE_VALUE);
-}
+//static void async_resumption_new(h2o_iovec_t session_id, h2o_iovec_t session_data)
+//{
+//    h2o_memcached_set(async_resumption_context.memc, session_id, session_data,
+//                      (uint32_t)time(NULL) + async_resumption_context.expiration,
+//                      H2O_MEMCACHED_ENCODE_KEY | H2O_MEMCACHED_ENCODE_VALUE);
+//}
 
-static void async_resumption_remove(h2o_iovec_t session_id)
-{
-    h2o_memcached_delete(async_resumption_context.memc, session_id, H2O_MEMCACHED_ENCODE_KEY);
-}
+//static void async_resumption_remove(h2o_iovec_t session_id)
+//{
+//    h2o_memcached_delete(async_resumption_context.memc, session_id, H2O_MEMCACHED_ENCODE_KEY);
+//}
 
 // void h2o_accept_setup_async_ssl_resumption(h2o_memcached_context_t *memc, unsigned expiration)
 // {
