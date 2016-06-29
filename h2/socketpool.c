@@ -23,7 +23,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#ifndef _MSC_VER
+#ifndef _WINDOWS
 #include <netdb.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -66,7 +66,7 @@ static void destroy_attached(struct pool_entry_t *entry)
 
 #ifdef _MSC_VER
 #include <windows.h>
-#ifdef WIN64
+#ifdef _WIN64
 #define __sync_sub_and_fetch(Addend, Value) InterlockedAdd64(Addend, -(LONG64)Value)
 #else
 #define __sync_sub_and_fetch(Addend, Value) InterlockedAdd(Addend, -(long)Value)
@@ -250,12 +250,11 @@ static void on_getaddr(h2o_hostinfo_getaddr_req_t *getaddr_req, const char *errs
 
 #ifdef _MSC_VER
 #include <windows.h>
-#ifdef WIN64
+#define __sync_fetch_and_add InterlockedExchangeAdd
+#ifdef _WIN64
 #define __sync_add_and_fetch InterlockedAdd64
-#define __sync_fetch_and_add InterlockedExchangeAdd64
 #else
 #define __sync_add_and_fetch InterlockedAdd
-#define __sync_fetch_and_add InterlockedExchangeAdd
 #endif
 #endif
 

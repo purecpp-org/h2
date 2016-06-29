@@ -195,7 +195,7 @@ void h2o_mem_link_shared(h2o_mem_pool_t *pool, void *p)
     link_shared(pool, H2O_STRUCT_FROM_MEMBER(struct st_h2o_mem_pool_shared_entry_t, bytes, p));
 }
 
-#ifdef _MSC_VER
+#ifdef _WINDOWS
 #include <windows.h>
 #include <sys/stat.h>
 #include <io.h>
@@ -466,7 +466,7 @@ h2o_iovec_t h2o_buffer_reserve(h2o_buffer_t **_inbuf, size_t min_guarantee)
                     goto MapError;
                 }
                 if ((newp = (void *)mmap(NULL, new_allocsize,
-#ifdef _MSC_VER
+#ifdef _WINDOWS
 					0
 #else
 					PROT_READ | PROT_WRITE, MAP_SHARED

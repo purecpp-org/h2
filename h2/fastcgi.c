@@ -20,7 +20,7 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _MSC_VER
+#ifndef _WINDOWS
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>

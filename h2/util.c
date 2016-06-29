@@ -19,10 +19,6 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#ifdef _MSC_VER
-#include <WinSock2.h>
-#endif
-
 #include <assert.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -146,7 +142,7 @@ Exit:
     free_accept_data(data);
 }
 
-#ifdef _MSC_VER
+#ifdef _WINDOWS
 typedef unsigned short in_port_t;
 #endif
 

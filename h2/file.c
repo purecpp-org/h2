@@ -21,9 +21,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#ifdef _MSC_VER
-#include <malloc.h>
-#else
+#ifndef _WINDOWS
 #include <dirent.h>
 #include <unistd.h>
 #endif
@@ -42,11 +40,12 @@
 #include "h2o/time_.h"
 #include "h2o/rand.h"
 
-#ifdef _MSC_VER
+#ifdef _WINDOWS
 #include <windows.h>
 #include <io.h>
 #include <fcntl.h>
 #include "msdirent.h"
+#include <malloc.h>
 
 unsigned int FakePRead(int fd, void *to, size_t size, uint64_t offset) {
 	// size_t might be 64-bit.  DWORD is always 32.

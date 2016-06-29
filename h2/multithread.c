@@ -20,7 +20,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#ifdef _MSC_VER
+#ifdef _WINDOWS
 #include <WinSock2.h>
 #endif
 #include <assert.h>

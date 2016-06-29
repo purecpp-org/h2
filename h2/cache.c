@@ -154,7 +154,7 @@ void h2o_cache_clear(h2o_cache_t *cache)
 
 #ifdef _MSC_VER
 #include <windows.h>
-#ifdef WIN64
+#ifdef _WIN64
 #define __sync_fetch_and_add InterlockedExchangeAdd64
 #else
 #define __sync_fetch_and_add InterlockedExchangeAdd
@@ -204,7 +204,7 @@ NotFound:
 
 #ifdef _MSC_VER
 #include <windows.h>
-#ifdef WIN64
+#ifdef _WIN64
 #define __sync_fetch_and_sub(Addend, Value) InterlockedExchangeAdd64(Addend, Value)
 #else
 #define __sync_fetch_and_sub(Addend, Value) InterlockedExchangeAdd(Addend, -(long)Value)

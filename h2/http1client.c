@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#ifndef _MSC_VER
+#ifndef _WINDOWS
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <netinet/in.h>

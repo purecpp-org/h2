@@ -20,10 +20,6 @@
  * IN THE SOFTWARE.
  */
 
-#ifdef _MSC_VER
-#include <WinSock2.h>
-#endif
-
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
@@ -33,7 +29,7 @@
 #include <string.h>
 #include <sys/types.h>
 
-#ifndef _MSC_VER
+#ifndef _WINDOWS
 #include <grp.h>
 #include <pwd.h>
 #include <spawn.h>

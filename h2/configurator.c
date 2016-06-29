@@ -20,7 +20,6 @@
  * IN THE SOFTWARE.
  */
 #ifdef _MSC_VER
-#include <WinSock2.h>
 #include <malloc.h>
 #endif
 

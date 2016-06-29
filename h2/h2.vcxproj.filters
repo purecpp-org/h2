@@ -194,5 +194,8 @@
     <ClInclude Include="msdirent.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="uv-binding.c.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

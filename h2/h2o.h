@@ -26,7 +26,14 @@
 extern "C" {
 #endif
 
-#ifndef _MSC_VER
+
+#if defined(__MINGW64__) || defined(__MINGW32__) || defined(_MSC_VER)
+#ifndef _WINDOWS
+#define _WINDOWS
+#endif
+#endif
+
+#ifndef _WINDOWS
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <unistd.h>
