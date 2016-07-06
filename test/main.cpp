@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 extern "C"
 {
@@ -13,11 +14,23 @@ extern "C"
 #include <wslay/wslay.h>
 }
 
-h2o_globalconf_t config;
-h2o_context_t ctx;
-// SSL_CTX *ssl_ctx = NULL;
-h2o_accept_ctx_t accept_ctx;
+// h2o_globalconf_t config;
+// h2o_context_t ctx;
+// // SSL_CTX *ssl_ctx = NULL;
+// h2o_accept_ctx_t accept_ctx;
 
+
+h2o_globalconf_t config;
+
+struct thread_data_t
+{
+	h2o_context_t ctx;
+	// SSL_CTX *ssl_ctx = NULL;
+	h2o_accept_ctx_t accept_ctx;
+	uv_thread_t tid;
+};
+
+std::vector<thread_data_t> thread_data;
 
 static h2o_pathconf_t *register_handler(h2o_hostconf_t *hostconf, const char *path, int(*on_req)(h2o_handler_t *, h2o_req_t *))
 {
@@ -70,13 +83,14 @@ static int websocket(h2o_handler_t *self, h2o_req_t *req)
 
 static int index(h2o_handler_t *self, h2o_req_t *req)
 {
+	std::cout << uv_thread_self() << std::endl;
 	if (h2o_memis(req->method.base, req->method.len, H2O_STRLIT("GET"))) {
 		static h2o_generator_t generator = { NULL, NULL };
 		req->res.status = 200;
 		req->res.reason = "OK";
-		h2o_add_header(&req->pool, &req->res.headers, H2O_TOKEN_CONTENT_TYPE, H2O_STRLIT("text/plain; charset=utf-8"));
+		//h2o_add_header(&req->pool, &req->res.headers, H2O_TOKEN_CONTENT_TYPE, H2O_STRLIT("text/plain; charset=utf-8"));
 		h2o_start_response(req, &generator);
-		h2o_iovec_t body = h2o_strdup(&req->pool, "Fuck you", sizeof("Fuck you") - 1);
+		h2o_iovec_t body = h2o_strdup(&req->pool, "Test", sizeof("Test") - 1);
 		h2o_send(req, &body, 1, 1);
 		return 0;
 	}
@@ -116,14 +130,17 @@ static void after_read(uv_stream_t* handle,
 
 static void on_accept(uv_stream_t *listener, int status)
 {
-	uv_tcp_t *conn;
-	h2o_socket_t *sock;
-
 	if (status != 0)
 		return;
+	static int i = 0;
+	++i;
+	if (i == 24)
+	{
+		i = 0;
+	}
 
-	conn = (uv_tcp_t*)h2o_mem_alloc(sizeof(*conn));
-	uv_tcp_init(listener->loop, conn);
+	uv_tcp_t *conn = (uv_tcp_t*)h2o_mem_alloc(sizeof(*conn));
+	uv_tcp_init(thread_data[i].ctx.loop, conn);
 
 	if (uv_accept(listener, (uv_stream_t *)conn) != 0) {
 		uv_close((uv_handle_t *)conn, (uv_close_cb)free);
@@ -132,23 +149,27 @@ static void on_accept(uv_stream_t *listener, int status)
 
 //  	uv_read_start((uv_stream_t*)conn, echo_alloc, after_read);
 
-	sock = h2o_uv_socket_create((uv_stream_t *)conn, (uv_close_cb)free);
-	h2o_accept(&accept_ctx, sock);
+	h2o_socket_t *sock = h2o_uv_socket_create((uv_stream_t *)conn, (uv_close_cb)free);
+	h2o_accept(&thread_data[i].accept_ctx, sock);
 }
 
-static int create_listener(void)
+static int create_listener()
 {
-	static uv_tcp_t listener;
 	struct sockaddr_in addr;
 	int r;
 
-	uv_tcp_init(ctx.loop, &listener);
-	uv_ip4_addr("127.0.0.1", 7891, &addr);
-	if ((r = uv_tcp_bind(&listener, (struct sockaddr *)&addr, 0)) != 0) {
+	static uv_tcp_t listener;
+
+	uv_tcp_init(thread_data[0].ctx.loop, &listener);
+	uv_ip4_addr("0.0.0.0", 7891, &addr);
+	if ((r = uv_tcp_bind(&listener, (struct sockaddr *)&addr, 0)) != 0)
+	{
 		fprintf(stderr, "uv_tcp_bind:%s\n", uv_strerror(r));
 		goto Error;
 	}
-	if ((r = uv_listen((uv_stream_t *)&listener, 128, on_accept)) != 0) {
+	listener.data = (void*)index;
+	if ((r = uv_listen((uv_stream_t *)&listener, 128, on_accept)) != 0)
+	{
 		fprintf(stderr, "uv_listen:%s\n", uv_strerror(r));
 		goto Error;
 	}
@@ -172,13 +193,14 @@ static int reproxy_test(h2o_handler_t *self, h2o_req_t *req)
 	return 0;
 }
 
-static int setup_ssl(const char *cert_file, const char *key_file)
+static int setup_ssl(const char *cert_file, const char *key_file, size_t index)
 {
 	SSL_load_error_strings();
 	SSL_library_init();
 	OpenSSL_add_all_algorithms();
 
-	accept_ctx.ssl_ctx = SSL_CTX_new(SSLv23_server_method());
+	auto& accept_ctx = thread_data[index].accept_ctx;
+		accept_ctx.ssl_ctx = SSL_CTX_new(SSLv23_server_method());
 	SSL_CTX_set_options(accept_ctx.ssl_ctx, SSL_OP_NO_SSLv2);
 
 // 	if (USE_MEMCACHED) {
@@ -208,6 +230,11 @@ static int setup_ssl(const char *cert_file, const char *key_file)
 	return 0;
 }
 
+void run_loop(void* index)
+{
+	uv_run(thread_data[(size_t)index].ctx.loop, UV_RUN_DEFAULT);
+}
+
 int main()
 {
 	h2o_config_init(&config);
@@ -219,30 +246,38 @@ int main()
 	h2o_file_register(h2o_config_register_path(hostconf, "/static", 0), "static", NULL, NULL, H2O_FILE_FLAG_DIR_LISTING);
 	register_handler(hostconf, "/websocket", websocket);
 	register_handler(hostconf, "/", index);
+	config.server_name.len = 0;
 
-	uv_loop_t loop;
-	uv_loop_init(&loop);
-	h2o_context_init(&ctx, &loop, &config);
+	thread_data.resize(24);
+	for (size_t i = 0; i < 24; ++i)
+	{
+		thread_data_t& data = thread_data[i];
+		uv_loop_t loop;
+		uv_loop_init(&loop);
+		h2o_context_init(&data.ctx, &loop, &config);
 
-// 	if (setup_ssl("cert/server.crt", "cert/server.key") != 0)
-// 	{
-// 		fprintf(stderr, "failed to setup ssl\n");
-// 		return 1;
-// 	}
+	// 	if (setup_ssl("cert/server.crt", "cert/server.key") != 0)
+	// 	{
+	// 		fprintf(stderr, "failed to setup ssl\n");
+	// 		return 1;
+	// 	}
 
-	accept_ctx.ctx = &ctx;
-	accept_ctx.hosts = config.hosts;
+		data.accept_ctx.ctx = &data.ctx;
+		data.accept_ctx.hosts = config.hosts;
 
-	if (create_listener() != 0) {
+
+		uv_thread_create(&data.tid, &run_loop, (void*)i);
+	}
+
+	if (create_listener() != 0)
+	{
 		fprintf(stderr, "failed to listen to 127.0.0.1:7891:%s\n", strerror(errno));
 		return 1;
 	}
-
-
-	uv_run(ctx.loop, UV_RUN_DEFAULT);
-
-
-
+	for (auto& data : thread_data)
+	{
+		uv_thread_join(&data.tid);
+	}
 
 	return 0;
 }
