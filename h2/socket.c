@@ -114,7 +114,7 @@ static void on_write_complete(h2o_socket_t *sock, const char *err);
 #if H2O_USE_LIBUV
 #include "uv-binding.c.h"
 #else
-#include "socket/evloop.c.h"
+#include "evloop.c.h"
 #endif
 
 h2o_buffer_mmap_settings_t h2o_socket_buffer_mmap_settings = {

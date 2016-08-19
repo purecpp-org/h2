@@ -7,8 +7,13 @@ extern "C"
 {
 #include <h2o.h>
 #include <h2o/http1.h>
-//#include <h2o/socket/evloop.h>
+#if H2O_USE_LIBUV
 #include <h2o/socket/uv-binding.h>
+#else
+#include <h2o/socket/evloop.h>
+#endif
+
+
 //#include <h2o/http2.h>
 #include <h2o/websocket.h>
 #include <wslay/wslay.h>
@@ -128,6 +133,7 @@ static void after_read(uv_stream_t* handle,
 	std::cout << std::string(buf->base, nread) << std::endl;
 }
 
+#if H2O_USE_LIBUV
 static void on_accept(uv_stream_t *listener, int status)
 {
 	if (status != 0)
@@ -180,6 +186,49 @@ Error:
 	return r;
 }
 
+#else
+
+static h2o_context_t ctx;
+static h2o_accept_ctx_t accept_ctx;
+
+static void on_accept(h2o_socket_t *listener, const char *err)
+{
+	h2o_socket_t *sock;
+
+	if (err != NULL) {
+		return;
+	}
+
+	if ((sock = h2o_evloop_socket_accept(listener)) == NULL)
+		return;
+	h2o_accept(&accept_ctx, sock);
+}
+
+static int create_listener(void)
+{
+	struct sockaddr_in addr;
+	int fd, reuseaddr_flag = 1;
+	h2o_socket_t *sock;
+
+	memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_addr.s_addr = htonl(0x7f000001);
+	addr.sin_port = htons(7890);
+
+	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1 ||
+		setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr_flag, sizeof(reuseaddr_flag)) != 0 ||
+		bind(fd, (struct sockaddr *)&addr, sizeof(addr)) != 0 || listen(fd, SOMAXCONN) != 0) {
+		return -1;
+	}
+
+	sock = h2o_evloop_socket_create(ctx.loop, fd, H2O_SOCKET_FLAG_DONT_READ);
+	h2o_socket_read_start(sock, on_accept);
+
+	return 0;
+}
+
+#endif
+
 static int reproxy_test(h2o_handler_t *self, h2o_req_t *req)
 {
 	if (!h2o_memis(req->method.base, req->method.len, H2O_STRLIT("GET")))
@@ -230,10 +279,12 @@ static int setup_ssl(const char *cert_file, const char *key_file, size_t index)
 	return 0;
 }
 
+#if H2O_USE_LIBUV
 void run_loop(void* index)
 {
 	uv_run(thread_data[(size_t)index].ctx.loop, UV_RUN_DEFAULT);
 }
+#endif
 
 int main()
 {
@@ -248,10 +299,13 @@ int main()
 	register_handler(hostconf, "/", index);
 	config.server_name.len = 0;
 
+
+#if H2O_USE_LIBUV
 	thread_data.resize(24);
 	for (size_t i = 0; i < 24; ++i)
 	{
 		thread_data_t& data = thread_data[i];
+
 		uv_loop_t loop;
 		uv_loop_init(&loop);
 		h2o_context_init(&data.ctx, &loop, &config);
@@ -267,6 +321,7 @@ int main()
 
 
 		uv_thread_create(&data.tid, &run_loop, (void*)i);
+
 	}
 
 	if (create_listener() != 0)
@@ -278,6 +333,22 @@ int main()
 	{
 		uv_thread_join(&data.tid);
 	}
+
+#else
+	h2o_context_init(&ctx, h2o_evloop_create(), &config);
+
+	accept_ctx.ctx = &ctx;
+	accept_ctx.hosts = config.hosts;
+
+	if (create_listener() != 0) {
+		fprintf(stderr, "failed to listen to 127.0.0.1:7890:%s\n", strerror(errno));
+		return -1;
+	}
+
+
+	while (h2o_evloop_run(ctx.loop) == 0)
+		;
+#endif
 
 	return 0;
 }
