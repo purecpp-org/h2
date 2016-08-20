@@ -86,21 +86,16 @@ static int websocket(h2o_handler_t *self, h2o_req_t *req)
 
 }
 
-static int index(h2o_handler_t *self, h2o_req_t *req)
+static int index1(h2o_handler_t *self, h2o_req_t *req)
 {
-	std::cout << uv_thread_self() << std::endl;
-	if (h2o_memis(req->method.base, req->method.len, H2O_STRLIT("GET"))) {
-		static h2o_generator_t generator = { NULL, NULL };
-		req->res.status = 200;
-		req->res.reason = "OK";
-		//h2o_add_header(&req->pool, &req->res.headers, H2O_TOKEN_CONTENT_TYPE, H2O_STRLIT("text/plain; charset=utf-8"));
-		h2o_start_response(req, &generator);
-		h2o_iovec_t body = h2o_strdup(&req->pool, "Test", sizeof("Test") - 1);
-		h2o_send(req, &body, 1, 1);
-		return 0;
-	}
-
-	return -1;
+	static h2o_generator_t generator = { NULL, NULL };
+	req->res.status = 200;
+	req->res.reason = "OK";
+	//h2o_add_header(&req->pool, &req->res.headers, H2O_TOKEN_CONTENT_TYPE, H2O_STRLIT("text/plain; charset=utf-8"));
+	h2o_start_response(req, &generator);
+	h2o_iovec_t body = h2o_strdup(&req->pool, "Test", sizeof("Test") - 1);
+	h2o_send(req, &body, 1, 1);
+	return 0;
 }
 
 static int chunked_test(h2o_handler_t *self, h2o_req_t *req)
@@ -173,7 +168,7 @@ static int create_listener()
 		fprintf(stderr, "uv_tcp_bind:%s\n", uv_strerror(r));
 		goto Error;
 	}
-	listener.data = (void*)index;
+	listener.data = (void*)index1;
 	if ((r = uv_listen((uv_stream_t *)&listener, 128, on_accept)) != 0)
 	{
 		fprintf(stderr, "uv_listen:%s\n", uv_strerror(r));
@@ -212,7 +207,7 @@ static int create_listener(void)
 
 	memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl(0x7f000001);
+	addr.sin_addr.s_addr = htonl(0);
 	addr.sin_port = htons(7890);
 
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1 ||
@@ -296,7 +291,7 @@ int main()
 	h2o_reproxy_register(register_handler(hostconf, "/reproxy-test", reproxy_test));
 	h2o_file_register(h2o_config_register_path(hostconf, "/static", 0), "static", NULL, NULL, H2O_FILE_FLAG_DIR_LISTING);
 	register_handler(hostconf, "/websocket", websocket);
-	register_handler(hostconf, "/", index);
+	register_handler(hostconf, "/", index1);
 	config.server_name.len = 0;
 
 
